@@ -11,7 +11,7 @@ $cred
     ->setToken('omne02rp2hr1sjn9');
 
 
-$o = new \Diynyk\Bitrix\Entities\LeadEntity(
+$o = new \Diynyk\Bitrix\Entities\CompanyEntity(
     $cred,
     [
         'ADDRESS' => 'Bool shit',
@@ -36,6 +36,6 @@ foreach ($lead->index() as $index) {
 
 //var_dump($lead->add($o));
 
-//$entity = $lead->get(16);
-//$entity->NAME = 'kek';//$entity->NAME . '5';
+//$entity = $lead->get(14);
+//$entity->NAME = 'lol'; //$entity->NAME . 'lol';
 //$lead->update($entity);
