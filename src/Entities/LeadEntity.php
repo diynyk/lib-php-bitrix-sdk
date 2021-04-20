@@ -2,98 +2,64 @@
 
 namespace Diynyk\Bitrix\Entities;
 
-use Diynyk\Bitrix\Exceptions\InvalidPropertyExcepton;
+use Diynyk\Bitrix\Helpers\BitrixConnectionCredentials;
+use Diynyk\Bitrix\Helpers\BitrixRestRequestHelper;
 
 /**
+ * Class LeadEntity
+ * @package Diynyk\Bitrix\Entities
  * @property string ADDRESS
  * @property string ADDRESS_2
  */
-
-class LeadEntity
+class LeadEntity extends EntityAbstract
 {
 
-    private static $fields = [
-        'ADDRESS' => ['name' => 'Адрес контакта', 'type' => 'string'],
-        'ADDRESS_2' => ['name' => 'Вторая страница адреса', 'type' => 'string'],
+    protected static $fieldsDefitition = [];
 
+    protected static $fieldDefinitionCache;
 
-        'ADDRESS_CITY' => ['name' => 'Город', 'type' => 'string'],
-        'ADDRESS_COUNTRY' => ['name' => 'Страна', 'type' => 'string'],
-        'ADDRESS_COUNTRY_CODE' => ['name' => 'Код страны', 'type' => 'string'],
-        'ADDRESS_POSTAL_CODE' => ['name' => 'Почтовый индекс', 'type' => 'string'],
-        'ADDRESS_PROVINCE' => ['name' => 'Область', 'type' => 'string'],
-        'ADDRESS_REGION' => ['name' => 'Район', 'type' => 'string'],
-        'ASSIGNED_BY_ID' => ['name' => 'Связано с пользователем по ID', 'type' => 'user'],
-        'BIRTHDATE' => ['name' => 'Дата рождения', 'type' => 'date'],
-        'COMMENTS' => ['name' => 'Комментарии', 'type' => 'string'],
-        'COMPANY_ID' => ['name' => 'Привязка лида к компании', 'type' => 'crm_company'],
-        'COMPANY_TITLE' => ['name' => 'Название компании, привязанной к лиду', 'type' => 'crm_company'],
-        'CONTACT_ID' => ['name' => 'Привязка лида к контакту', 'type' => 'crm_contact'],
-        'CREATED_BY_ID' => ['name' => 'Кем создана', 'type' => 'user'],
-        'DATE_CREATE' => ['name' => 'Дата создания', 'type' => 'datetime'],
-        'DATE_MODIFY' => ['name' => 'Дата изменения', 'type' => 'datetime'],
-        'EMAIL' => ['name' => 'Адрес электронной почты', 'type' => 'crm_multifield'],
-        'HAS_EMAIL' => ['name' => 'Проверка заполненности поля электронной почты', 'type' =>    'char'],
-        'HAS_PHONE' => ['name' => 'Проверка заполненности поля телефон', 'type' => 'char'],
-        'HONORIFIC' => ['name' => 'Вид обращения', 'type' => 'crm_status'],
-        'ID' => ['name' => 'Идентификатор контакта', 'type' => 'integer'],
-        'IM' => ['name' => 'Мессенджеры', 'type' => 'crm_multifield'],
-        'IS_RETURN_CUSTOMER' => ['name' => 'Признак повторного лида', 'type' => 'char'],
-        'MODIFY_BY_ID' => ['name' => 'Идентификатор автора последнего изменения', 'type' => 'user'],
-        'NAME' => ['name' => 'Имя', 'type' => 'string'],
-        'OPENED' =>    ['name' => 'Доступен для всех', 'type' => 'char'],
-        'ORIGINATOR_ID' => ['name' => 'Идентификатор источника данных', 'type' => 'string'],
-        'ORIGIN_ID' => ['name' => 'Идентификатор элемента в источнике данных', 'type' => 'string'],
-        'ORIGIN_VERSION' => ['name' => 'Оригинальная версия', 'type' => 'string'],
-        'PHONE' => ['name' => 'Телефон контакта', 'type' => 'crm_multifield'],
-        'POST' => ['name' => 'Должность', 'type' => 'string'],
-        'SECOND_NAME' => ['name' => 'Отчество', 'type' => 'string'],
-        'SOURCE_DESCRIPTION' => ['name' => 'Описание источника', 'type' => 'string'],
-        'SOURCE_ID' => ['name' => 'Идентификатор источника', 'type' => 'crm_status'],
-        'STATUS_DESCRIPTION' => ['name' => '', 'type' => 'string'],
-        'STATUS_ID' => ['name' => '', 'type' => 'string'],
-        'STATUS_SEMANTIC_ID' => ['name' => '', 'type' => 'string'],
-        'TITLE' => ['name' => 'Название лида', 'type' => 'string'],
-        'UTM_CAMPAIGN' => ['name' => 'Обозначение рекламной кампании', 'type' => 'string'],
-        'UTM_CONTENT' => ['name' => 'Содержание кампании', 'type' => 'string'],
-        'UTM_MEDIUM' => ['name' => 'Тип трафика', 'type' => 'string'],
-        'UTM_SOURCE' => ['name' => 'Рекламная система', 'type' => 'string'],
-        'UTM_TERM' => ['name' => 'Условие поиска кампании', 'type' => 'string'],
-        'WEB' => ['name' => 'URL ресурсов лида', 'type' => 'crm_multifield'],
-
-    ];
-    private $state;
-
-    public function __construct(array $state = [])
+    protected static function readDynamicFieldDefinitionCached(BitrixConnectionCredentials $credentials)
     {
-        foreach (self::$fields as $id => $properties) {
-            if (!empty($state[$id])) {
-                $this->state[$id] = $state[$id];
-            } else {
-                $this->state[$id] = $properties['type'] === 'string' ? '' : 0;
+        if (empty(static::$fieldDefinitionCache)) {
+            $helper = new BitrixRestRequestHelper($credentials, 'crm.lead.fields', [
+                'method' => 'GET',
+            ]);
+            $data = $helper->execute();
+            $parsed = json_decode($data, true);
+            $result = $parsed['result'];
+
+            $output = [];
+
+            foreach ($result as $fieldId => $fieldDefinition) {
+                $output[$fieldId] = self::getFieldDefinition(
+                    $fieldDefinition['title'],
+                    $fieldDefinition['type'],
+                    '',
+                    $fieldDefinition['isRequired'],
+                    $fieldDefinition['isReadOnly'],
+                    false
+                );
             }
+
+            static::$fieldDefinitionCache = $output;
         }
-    }
-    private function validateField($name)
-    {
-        return !empty(self::$fields[$name]);
-    }
-    public function __set($name, $value)
-    {
-        if ($this->validateField($name)) {
-            $this->state[$name] = $value;
-        }
-        throw new InvalidPropertyExcepton(vsprintf('Invalid property %s', [$name]));
+
+        return static::$fieldDefinitionCache;
     }
 
-    public function __get($name)
+    public function __construct(BitrixConnectionCredentials $credentials, array $state = [])
     {
-        if ($this->validateField($name)) {
-            return $this->state[$name];
+        foreach (static::readDynamicFieldDefinitionCached($credentials) as $fieldKey => $fieldDefinition) {
+            static::$fieldsDefitition[$fieldKey] = $fieldDefinition;
         }
-        throw new InvalidPropertyExcepton(vsprintf('Invalid property %s', [$name]));
+
+        parent::__construct($state);
     }
-    public function __toString()
+
+
+    protected function validate(string $name, mixed $value): bool
     {
+        // TODO: Add validation
+        return true;
     }
 }

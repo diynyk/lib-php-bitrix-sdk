@@ -1,22 +1,12 @@
 {
-    "name": "diynyk/bitrix.sdk",
-    "type": "library",
-    "require": {       
-      "guzzlehttp/guzzle": "~7",
-      "monolog/monolog": "~2"
-      
-    },
-    "require-dev": {
-      "phpunit/phpunit": "9.5.4"
-    },
-    "license": "MIT",
-    "minimum-stability": "dev",
-    "autoload": {
-      "psr-4": {
-        "Diynyk\\Bitrix\\": "src"
-      }
-    },
-    "scripts": {
-      "test": "phpunit"
+  "name": "diynyk/bitrix-sdk",
+  "description": "Easy to use bitrix API wrapper for PHP",
+  "require": {
+    "guzzlehttp/guzzle": "~7"
+  },
+  "autoload": {
+    "psr-4": {
+      "Diynyk\\Bitrix\\": "src"
     }
   }
+}
