@@ -2,6 +2,7 @@
 
 namespace Diynyk\Bitrix\Exceptions;
 
-class InvalidPropertyNameException extends BitrixSDKExceptionAbstract {
+class InvalidPropertyNameException extends BitrixSDKExceptionAbstract
+{
 
 }

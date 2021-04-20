@@ -10,6 +10,7 @@ use Diynyk\Bitrix\Helpers\BitrixRestRequestHelper;
  * @package Diynyk\Bitrix\Entities
  * @property string ADDRESS
  * @property string ADDRESS_2
+ * @property string NAME
  */
 class LeadEntity extends EntityAbstract
 {
@@ -18,12 +19,23 @@ class LeadEntity extends EntityAbstract
 
     protected static $fieldDefinitionCache;
 
+    public function __construct(BitrixConnectionCredentials $credentials, array $state = [])
+    {
+        foreach (static::readDynamicFieldDefinitionCached($credentials) as $fieldKey => $fieldDefinition) {
+            static::$fieldsDefitition[$fieldKey] = $fieldDefinition;
+        }
+
+        parent::__construct($state);
+    }
+
     protected static function readDynamicFieldDefinitionCached(BitrixConnectionCredentials $credentials)
     {
         if (empty(static::$fieldDefinitionCache)) {
-            $helper = new BitrixRestRequestHelper($credentials, 'crm.lead.fields', [
+            $helper = new BitrixRestRequestHelper(
+                $credentials, 'crm.lead.fields', [
                 'method' => 'GET',
-            ]);
+            ]
+            );
             $data = $helper->execute();
             $parsed = json_decode($data, true);
             $result = $parsed['result'];
@@ -46,16 +58,6 @@ class LeadEntity extends EntityAbstract
 
         return static::$fieldDefinitionCache;
     }
-
-    public function __construct(BitrixConnectionCredentials $credentials, array $state = [])
-    {
-        foreach (static::readDynamicFieldDefinitionCached($credentials) as $fieldKey => $fieldDefinition) {
-            static::$fieldsDefitition[$fieldKey] = $fieldDefinition;
-        }
-
-        parent::__construct($state);
-    }
-
 
     protected function validate(string $name, mixed $value): bool
     {

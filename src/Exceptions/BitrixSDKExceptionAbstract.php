@@ -4,6 +4,7 @@ namespace Diynyk\Bitrix\Exceptions;
 
 use Exception;
 
-abstract class BitrixSDKExceptionAbstract extends Exception {
+abstract class BitrixSDKExceptionAbstract extends Exception
+{
 
 }

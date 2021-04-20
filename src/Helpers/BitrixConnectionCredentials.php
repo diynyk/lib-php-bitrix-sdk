@@ -19,6 +19,12 @@ class BitrixConnectionCredentials
      */
     private $token = '';
 
+    public function getEndpoint($call)
+    {
+        $template = '%s/%s/%s/%s.json';
+        return vsprintf($template, [$this->getUrl(), $this->getUserId(), $this->getToken(), $call]);
+    }
+
     /**
      * @return string
      */
@@ -71,11 +77,5 @@ class BitrixConnectionCredentials
     {
         $this->token = $token;
         return $this;
-    }
-
-    public function getEndpoint($call)
-    {
-        $template = '%s/%s/%s/%s.json';
-        return vsprintf($template, [$this->getUrl(), $this->getUserId(), $this->getToken(), $call]);
     }
 }

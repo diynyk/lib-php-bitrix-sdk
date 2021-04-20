@@ -17,57 +17,116 @@ class Lead
         $this->credetials = $credetials;
     }
 
-
-    private function parseResult(array $result) {
-        return array_column($result['result'], 'ID');
-      }
-      
-
-    public function index($page=0): array
+    public function index($page = 0): array
     {
-        echo "Page=$page\n";
-        $items = [];
+        $helper = new BitrixRestRequestHelper(
+            $this->credetials, 'crm.lead.list', [
+                                 'method' => 'GET',
+                                 'query' => [
+                                     'select[]' => 'ID',
+                                     'start' => $page
+                                 ]
+                             ]
+        );
+        $response = $helper->execute();
 
-  $helper = new BitrixRestRequestHelper($this->credetials, 'crm.lead.list', [
-    'method' => 'GET',
-    'query'=> [
-        'select[]'=>'ID',
-        'start'=>$page
-    ]
-]);
-  $response = (string) $helper->execute();
-  
-var_export($response);
+        $data = json_decode($response, true);
+        $items = $this->parseResult($data);
 
-    $data = json_decode($response, true);
-    $items= $this->parseResult($data);
+        if (isset($data['next'])) {
+            $items = array_merge($items, $this->index((int)$data['next']));
+        }
 
-    if (isset($data['next'])) {
-      $items=array_merge($items, $this->index((int)$data['next']));    
-    
-    } 
+        return array_map(
+            function ($i) {
+                return (int)$i;
+            },
+            $items
+        );
+    }
 
-    return array_map(function ($i){ return (int) $i;},$items);
-    
+    private function parseResult(array $result)
+    {
+        return array_column($result['result'], 'ID');
     }
 
     public function add(LeadEntity $entity): LeadEntity
     {
+        $helper = new BitrixRestRequestHelper(
+            $this->credetials, 'crm.lead.add', [
+                                 'method' => 'POST',
+                                 'body' => [
+                                     'fields' => $entity->toArray(),
+                                 ]
+                             ]
+        );
+        $response = $helper->execute();
 
+        $data = json_decode($response, true);
+
+        if (isset($data['result'])) {
+            return $this->get($data['result']);
+        }
+        throw new \Exception('fuck');
     }
 
     public function get(int $id): LeadEntity
     {
+        $helper = new BitrixRestRequestHelper(
+            $this->credetials, 'crm.lead.get', [
+                                 'method' => 'GET',
+                                 'query' => [
+                                     'ID' => $id,
+                                 ]
+                             ]
+        );
+        $response = $helper->execute();
 
-    
-          
+        $data = json_decode($response, true);
+
+        if (isset($data['result'])) {
+            return new LeadEntity($this->credetials, $data['result']);
+        }
+        throw new \Exception('fuck');
     }
 
     public function update(LeadEntity $entity): LeadEntity
     {
+        $helper = new BitrixRestRequestHelper(
+            $this->credetials, 'crm.lead.update', [
+                                 'method' => 'POST',
+                                 'query' => [
+                                     'ID' => $entity->ID,
+                                 ],
+                                 'body' => [
+                                     'fields' => $entity->toArray(),
+                                 ]
+                             ]
+        );
+        $response = $helper->execute();
+
+        $data = json_decode($response, true);
+
+        if (isset($data['result']) && $data['result']) {
+            return $this->get($entity->ID);
+        }
+        throw new \Exception('fuck');
     }
 
     public function delete(int $id): bool
     {
+        $helper = new BitrixRestRequestHelper(
+            $this->credetials, 'crm.lead.delete', [
+                                 'method' => 'GET',
+                                 'query' => [
+                                     'ID' => $id,
+                                 ]
+                             ]
+        );
+        $response = $helper->execute();
+
+        $data = json_decode($response, true);
+
+        return $data['result'];
     }
 }

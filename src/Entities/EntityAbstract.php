@@ -13,19 +13,6 @@ abstract class EntityAbstract
     const FIELD_MANDATORY_FLAG = 'mandatory';
     const FIELD_READONLY_FLAG = 'readonly';
     const FIELD_ARRAY_FLAG = 'array';
-
-    protected static function getFieldDefinition($description = 'Sample description', $type = 'string', $default = '', $mandatory = false, $readonly = false, $array = false)
-    {
-        return [
-            self::FIELD_DESCRIPTION => 'This is a sample field',
-            self::FIELD_DATA_TYPE => 'string',
-            self::FIELD_DEFAULT_VALUE => '',
-            self::FIELD_MANDATORY_FLAG => false,
-            self::FIELD_READONLY_FLAG => false,
-            self::FIELD_ARRAY_FLAG => false,
-        ];
-    }
-
     protected static $fieldsDefitition = [
         'SAMPLE_FIELD' => [
             self::FIELD_DESCRIPTION => 'This is a sample field',
@@ -36,7 +23,6 @@ abstract class EntityAbstract
             self::FIELD_ARRAY_FLAG => false,
         ],
     ];
-
     private $fields = [];
 
     /**
@@ -47,9 +33,27 @@ abstract class EntityAbstract
     {
         foreach (static::$fieldsDefitition as $fieldId => $fieldProps) {
             $this->fields[$fieldId] = !empty($state[$fieldId])
-                ?  $state[$fieldId]
+                ? $state[$fieldId]
                 : $fieldProps[self::FIELD_DEFAULT_VALUE];
         }
+    }
+
+    protected static function getFieldDefinition(
+        $description = 'Sample description',
+        $type = 'string',
+        $default = '',
+        $mandatory = false,
+        $readonly = false,
+        $array = false
+    ) {
+        return [
+            self::FIELD_DESCRIPTION => 'This is a sample field',
+            self::FIELD_DATA_TYPE => 'string',
+            self::FIELD_DEFAULT_VALUE => '',
+            self::FIELD_MANDATORY_FLAG => false,
+            self::FIELD_READONLY_FLAG => false,
+            self::FIELD_ARRAY_FLAG => false,
+        ];
     }
 
     /**
@@ -81,6 +85,17 @@ abstract class EntityAbstract
     }
 
     /**
+     * Checks if property name is valid
+     *
+     * @param string $name
+     * @return bool
+     */
+    public function validateProperty($name)
+    {
+        return !empty(static::$fieldsDefitition[$name]);
+    }
+
+    /**
      * @param $name
      * @throws InvalidPropertyNameException
      */
@@ -96,20 +111,10 @@ abstract class EntityAbstract
         );
     }
 
-    /**
-     * Checks if property name is valid
-     *
-     * @param string $name
-     * @return bool
-     */
-    public function validateProperty($name)
-    {
-        return !empty(static::$fieldsDefitition[$name]);
-    }
+    protected abstract function validate(string $name, mixed $value): bool;
 
-    public function toArray() {
+    public function toArray()
+    {
         return $this->fields;
     }
-
-    protected abstract function validate(string $name, mixed $value):bool;
 }
