@@ -3,9 +3,61 @@
 namespace Diynyk\Bitrix\Entities;
 
 use Diynyk\Bitrix\Exceptions\InvalidPropertyNameException;
+use Diynyk\Bitrix\Helpers\BitrixConnectionCredentials;
+use Diynyk\Bitrix\Helpers\BitrixRestRequestHelper;
 
 abstract class EntityAbstract
 {
+    const ENTITY_NAME = '';
+
+    /**
+     * @var array
+     */
+    private array $fields;
+
+    /**
+     * @param string $action
+     * @return string
+     */
+    public static function getBitrixMethodName(string $action): string
+    {
+        return vsprintf('crm.%s.%s', [static::ENTITY_NAME, $action]);
+    }
+
+    protected static function readDynamicFieldDefinitionCached(BitrixConnectionCredentials $credentials)
+    {
+        if (empty(static::$fieldDefinitionCache)) {
+            $callName = static::getBitrixMethodName('fields');
+
+            $response = (new BitrixRestRequestHelper(
+                $credentials,
+                $callName,
+                [
+                    'method' => 'GET',
+                ]
+            ))->execute();
+
+            $parsed = json_decode($response, true);
+
+            $result = $parsed['result'];
+            $output = [];
+
+            foreach ($result as $fieldId => $fieldDefinition) {
+                $output[$fieldId] = self::getFieldDefinition(
+                    $fieldDefinition['title'],
+                    $fieldDefinition['type'],
+                    '',
+                    $fieldDefinition['isRequired'],
+                    $fieldDefinition['isReadOnly'],
+                    false
+                );
+            }
+
+            static::$fieldDefinitionCache = $output;
+        }
+
+        return static::$fieldDefinitionCache;
+    }
 
     const FIELD_DESCRIPTION = 'name';
     const FIELD_DATA_TYPE = 'string';
@@ -13,7 +65,7 @@ abstract class EntityAbstract
     const FIELD_MANDATORY_FLAG = 'mandatory';
     const FIELD_READONLY_FLAG = 'readonly';
     const FIELD_ARRAY_FLAG = 'array';
-    protected static $fieldsDefitition = [
+    protected $fieldsDefitition = [
         'SAMPLE_FIELD' => [
             self::FIELD_DESCRIPTION => 'This is a sample field',
             self::FIELD_DATA_TYPE => 'string',
@@ -23,18 +75,27 @@ abstract class EntityAbstract
             self::FIELD_ARRAY_FLAG => false,
         ],
     ];
-    private $fields = [];
 
     /**
      * EntityAbstract constructor.
+     * @param BitrixConnectionCredentials $credentials
      * @param array $state
      */
-    public function __construct(array $state = [])
+    public function __construct(BitrixConnectionCredentials $credentials, array $state = [])
     {
-        foreach (static::$fieldsDefitition as $fieldId => $fieldProps) {
+        $this->fieldsDefitition = [];
+        foreach (static::readDynamicFieldDefinitionCached($credentials) as $fieldKey => $fieldDefinition) {
+            $this->fieldsDefitition[$fieldKey] = $fieldDefinition;
+        }
+
+        foreach ($this->fieldsDefitition as $fieldId => $fieldProps) {
             $this->fields[$fieldId] = !empty($state[$fieldId])
                 ? $state[$fieldId]
                 : $fieldProps[self::FIELD_DEFAULT_VALUE];
+        }
+
+        foreach ($this->fields as $fieldId => & $fieldValue) {
+            $fieldValue = $this->unpack($fieldId);
         }
     }
 
@@ -90,9 +151,9 @@ abstract class EntityAbstract
      * @param string $name
      * @return bool
      */
-    public function validateProperty($name)
+    public function validateProperty($name): bool
     {
-        return !empty(static::$fieldsDefitition[$name]);
+        return !empty($this->fieldsDefitition[$name]);
     }
 
     /**
@@ -115,6 +176,21 @@ abstract class EntityAbstract
 
     public function toArray()
     {
-        return $this->fields;
+        $output = [];
+        foreach (array_keys($this->fields) as $fieldName) {
+            $output[$fieldName] = $this->pack($fieldName);
+        }
+        return $output;
     }
+
+    protected function unpack($field): mixed
+    {
+        return $this->{$field};
+    }
+
+    protected function pack($field): mixed
+    {
+        return $this->{$field};
+    }
+
 }

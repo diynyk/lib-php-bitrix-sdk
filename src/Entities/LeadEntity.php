@@ -2,9 +2,6 @@
 
 namespace Diynyk\Bitrix\Entities;
 
-use Diynyk\Bitrix\Helpers\BitrixConnectionCredentials;
-use Diynyk\Bitrix\Helpers\BitrixRestRequestHelper;
-
 /**
  * Class LeadEntity
  * @package Diynyk\Bitrix\Entities
@@ -19,18 +16,18 @@ use Diynyk\Bitrix\Helpers\BitrixRestRequestHelper;
  * @property user ASSIGNED_BY_ID
  * @property date BIRTHDATE
  * @property string COMMENTS
- * @property crm_company COMPANY_ID
- * @property crm_company COMPANY_TITLE
- * @property crm_contact CONTACT_ID
- * @property user CREATED_BY_ID
+ * @property int COMPANY_ID
+ * @property string COMPANY_TITLE
+ * @property int CONTACT_ID
+ * @property int CREATED_BY_ID
  * @property string DATE_CREATE
  * @property string DATE_MODIFY
- * @property crm_multifield EMAIL
- * @property char HAS_EMAIL
- * @property char HAS_PHONE
- * @property crm_status HONORIFIC
+ * @property EntityContact[] EMAIL
+ * @property string HAS_EMAIL
+ * @property string HAS_PHONE
+ * @property string HONORIFIC
  * @property integer ID
- * @property crm_multifield IM	
+ * @property crm_multifield IM
  * @property char IS_RETURN_CUSTOMER
  * @property user MODIFY_BY_ID
  * @property string NAME
@@ -38,7 +35,7 @@ use Diynyk\Bitrix\Helpers\BitrixRestRequestHelper;
  * @property string ORIGINATOR_ID
  * @property string ORIGIN_ID
  * @property string ORIGIN_VERSION
- * @property crm_multifield PHONE
+ * @property EntityContact[] PHONE
  * @property string POST
  * @property string SECOND_NAME
  * @property string SOURCE_DESCRIPTION
@@ -56,54 +53,40 @@ use Diynyk\Bitrix\Helpers\BitrixRestRequestHelper;
  */
 class LeadEntity extends EntityAbstract
 {
-
-    protected static $fieldsDefitition = [];
+    const ENTITY_NAME = 'lead';
 
     protected static $fieldDefinitionCache;
-
-    public function __construct(BitrixConnectionCredentials $credentials, array $state = [])
-    {
-        foreach (static::readDynamicFieldDefinitionCached($credentials) as $fieldKey => $fieldDefinition) {
-            static::$fieldsDefitition[$fieldKey] = $fieldDefinition;
-        }
-
-        parent::__construct($state);
-    }
-
-    protected static function readDynamicFieldDefinitionCached(BitrixConnectionCredentials $credentials)
-    {
-        if (empty(static::$fieldDefinitionCache)) {
-            $helper = new BitrixRestRequestHelper(
-                $credentials, 'crm.lead.fields', [
-                'method' => 'GET',
-            ]
-            );
-            $data = $helper->execute();
-            $parsed = json_decode($data, true);
-            $result = $parsed['result'];
-
-            $output = [];
-
-            foreach ($result as $fieldId => $fieldDefinition) {
-                $output[$fieldId] = self::getFieldDefinition(
-                    $fieldDefinition['title'],
-                    $fieldDefinition['type'],
-                    '',
-                    $fieldDefinition['isRequired'],
-                    $fieldDefinition['isReadOnly'],
-                    false
-                );
-            }
-
-            static::$fieldDefinitionCache = $output;
-        }
-
-        return static::$fieldDefinitionCache;
-    }
 
     protected function validate(string $name, mixed $value): bool
     {
         // TODO: Add validation
         return true;
+    }
+
+    protected function pack($field): mixed
+    {
+        return match ($field) {
+            'PHONE', 'EMAIL' => array_map(
+                function ($e) {
+                    return $e->toArray();
+                },
+                $this->{$field}
+            ),
+            default => parent::pack($field),
+        };
+    }
+
+    protected function unpack($field): mixed
+    {
+
+        return match ($field) {
+            'PHONE', 'EMAIL' => is_array($this->$field) ? array_map(
+                function ($e) {
+                    return new EntityContact($e);
+                },
+                $this->$field
+            ) : [],
+            default => parent::unpack($field),
+        };
     }
 }
