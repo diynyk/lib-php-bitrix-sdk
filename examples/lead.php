@@ -2,6 +2,7 @@
 
 require_once __DIR__ . '/../vendor/autoload.php';
 
+use Diynyk\Bitrix\Entities\LeadEntity;
 use Diynyk\Bitrix\Lead;
 
 $cred = new \Diynyk\Bitrix\Helpers\BitrixConnectionCredentials();
@@ -11,7 +12,7 @@ $cred
     ->setToken('CHANGE_ME');
 
 
-$o = new \Diynyk\Bitrix\Entities\LeadEntity(
+$o = new LeadEntity(
     $cred,
     [
         'ADDRESS' => 'Bool shit',
@@ -34,7 +35,18 @@ foreach ($lead->index() as $index) {
 
 //$lead->delete(10);
 
-//var_dump($lead->add($o));
+
+$lead->add(
+    new LeadEntity(
+        $cred,
+        [
+            'ADDRESS' => 'Bool shit',
+            'NAME' => 'Ololo',
+            'ololo' => 'fsadgsdf'
+        ]
+    )
+);
+
 
 //$entity = $lead->get(14);
 //$entity->NAME = $entity->NAME . '2';
