@@ -13,39 +13,44 @@ use Diynyk\Bitrix\Helpers\BitrixRestRequestHelper;
  * @property string ADDRESS_CITY
  * @property string ADDRESS_COUNTRY
  * @property string ADDRESS_COUNTRY_CODE
+ * @property string ADDRESS_LEGAL
  * @property string ADDRESS_POSTAL_CODE
  * @property string ADDRESS_PROVINCE
  * @property string ADDRESS_REGION
  * @property user ASSIGNED_BY_ID
- * @property date BIRTHDATE
+ * @property string BANKING_DETAILS
  * @property string COMMENTS
- * @property crm_company COMPANY_ID
- * @property crm_company COMPANY_TITLE
- * @property crm_contact CONTACT_ID
+ * @property crm_status COMPANY_TYPE
  * @property user CREATED_BY_ID
+ * @property crm_currency CURRENCY_ID
  * @property string DATE_CREATE
  * @property string DATE_MODIFY
  * @property crm_multifield EMAIL
+ * @property crm_status EMPLOYESS
  * @property char HAS_EMAIL
  * @property char HAS_PHONE
- * @property crm_status HONORIFIC
  * @property integer ID
  * @property crm_multifield IM	
- * @property char IS_RETURN_CUSTOMER
+ * @property crm_status INDUSTRY
+ * @property char IS_MY_COMPANY
+ * @property crm_lead LEAD_ID
+ * @property file LOGO
  * @property user MODIFY_BY_ID
- * @property string NAME
  * @property char OPENED
  * @property string ORIGINATOR_ID
  * @property string ORIGIN_ID
  * @property string ORIGIN_VERSION
  * @property crm_multifield PHONE
- * @property string POST
- * @property string SECOND_NAME
- * @property string SOURCE_DESCRIPTION
- * @property string SOURCE_ID
- * @property string STATUS_DESCRIPTION
- * @property string STATUS_ID
- * @property string STATUS_SEMANTIC_ID
+ * @property string REG_ADDRESS
+ * @property string REG_ADDRESS_2
+ * @property string REG_ADDRESS_CITY
+ * @property string REG_ADDRESS_COUNTRY
+ * @property string REG_ADDRESS_COUNTRY_CODE	
+ * @property string REG_ADDRESS_LEGAL
+ * @property string REG_ADDRESS_POSTAL_CODE
+ * @property string REG_ADDRESS_PROVINCE
+ * @property string REG_ADDRESS_REGION
+ * @property double REVENUE
  * @property string TITLE
  * @property string UTM_CAMPAIGN
  * @property string UTM_CONTENT
@@ -54,7 +59,7 @@ use Diynyk\Bitrix\Helpers\BitrixRestRequestHelper;
  * @property string UTM_TERM
  * @property crm_multifield WEB
  */
-class LeadEntity extends EntityAbstract
+class CompanyEntity extends EntityAbstract
 {
 
     protected static $fieldsDefitition = [];
