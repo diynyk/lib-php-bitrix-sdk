@@ -23,7 +23,7 @@ namespace Diynyk\Bitrix\Entities;
  * @property int CURRENCY_ID
  * @property string DATE_CREATE
  * @property string DATE_MODIFY
- * @property crm_multifield EMAIL
+ * @property EntityContact EMAIL
  * @property crm_status EMPLOYESS
  * @property string HAS_EMAIL
  * @property string HAS_PHONE
