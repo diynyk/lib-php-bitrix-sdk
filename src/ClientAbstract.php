@@ -182,4 +182,36 @@ abstract class ClientAbstract
 
         return $data['result'];
     }
+
+    public function search(array $fields = [], $page = 0) : array {
+        $response = (new BitrixRestRequestHelper(
+            $this->credentials,
+
+            $this->getBitrixMethodName('list'),
+            [
+                'method' => 'GET',
+                'query' => [
+                    'start' => $page,
+                    'FILTER' => $fields,
+                    'SELECT' => [
+                        'ID'
+                    ]
+                ]
+            ]
+        ))->execute();
+
+        $data = $this->parseResponse($response);
+        $items = array_column($data['result'], 'ID');
+
+        if (isset($data['next'])) {
+            $items = array_merge($items, $this->search((int)$data['next']));
+        }
+
+        return array_map(
+            function ($i) {
+                return (int)$i;
+            },
+            $items
+        );
+    }
 }

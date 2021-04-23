@@ -38,16 +38,10 @@ class BitrixRestRequestHelper
     {
         $baseEndpoint = $this->credentials->getEndpoint($this->call);
         if (!empty($this->options['query'])) {
-            $pairs = [];
-
-            foreach ($this->options['query'] as $k => $v) {
-                $value = is_numeric($v)
-                    ? $v
-                    : vsprintf('"%s"', [$v]);
-                $pairs[] = vsprintf('%s=%s', [$k, urlencode($value)]);
-            }
-            $baseEndpoint = vsprintf('%s?%s', [$baseEndpoint, implode('&', $pairs)]);
+            $query = http_build_query($this->options['query']);
+            $baseEndpoint = vsprintf('%s?%s', [$baseEndpoint, $query]);
         }
+
 
         $client = new Client();
 
