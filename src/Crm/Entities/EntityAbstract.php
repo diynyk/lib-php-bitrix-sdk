@@ -1,6 +1,6 @@
 <?php
 
-namespace Diynyk\Bitrix\Entities;
+namespace Diynyk\Bitrix\Crm\Entities;
 
 use Diynyk\Bitrix\Exceptions\InvalidPropertyNameException;
 use Diynyk\Bitrix\Helpers\BitrixConnectionCredentials;
@@ -13,7 +13,7 @@ abstract class EntityAbstract
     /**
      * @var array
      */
-    private array $fields;
+    protected array $fields;
 
     /**
      * @param string $action

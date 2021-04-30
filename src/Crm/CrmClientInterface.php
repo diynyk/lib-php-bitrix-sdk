@@ -1,14 +1,15 @@
 <?php
 
-namespace Diynyk\Bitrix;
+namespace Diynyk\Bitrix\Crm;
 
-use Diynyk\Bitrix\Entities\EntityAbstract;
+
+use Diynyk\Bitrix\Crm\Entities\EntityAbstract;
 
 /**
  * Interface ClientInterface
  * @package Diynyk\Bitrix
  */
-interface ClientInterface
+interface CrmClientInterface
 {
     /**
      * @param int $page
