@@ -4,7 +4,7 @@ require_once __DIR__ . '/../vendor/autoload.php';
 
 use Diynyk\Bitrix\Entities\EntityContact;
 use Diynyk\Bitrix\Helpers\BitrixConnectionCredentials;
-use Diynyk\Bitrix\InvoiceStatus;
+use Diynyk\Bitrix\ActivityType;
 
 require_once 'credentials.php';
 
@@ -15,7 +15,7 @@ $cred
     ->setToken(USER_TOKEN);
 
 
-    $deal = new InvoiceStatus ($cred);
+    $deal = new ActivityType ($cred);
 
 $deals = $deal->index();
 $dealId = end($deals);

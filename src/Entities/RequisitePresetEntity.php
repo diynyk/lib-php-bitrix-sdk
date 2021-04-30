@@ -3,7 +3,7 @@
 namespace Diynyk\Bitrix\Entities;
 
 /**
- * Class ActivityEntity
+ * Class RequisitePresetEntity
  * @package Diynyk\Bitrix\Entities
  * @property double AMOUNT
  * @property int AMOUNT_CNT
@@ -18,9 +18,9 @@ namespace Diynyk\Bitrix\Entities;
  * @property int SORT
  * @property string THOUSANDS_SEP
  */
-class ActivityEntity extends EntityAbstract
+class RequisitePresetEntity extends EntityAbstract
 {
-    const ENTITY_NAME = 'activity';
+    const ENTITY_NAME = 'requisite.preset';
 
     protected static $fieldDefinitionCache;
 
