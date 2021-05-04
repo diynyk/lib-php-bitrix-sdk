@@ -4,7 +4,7 @@ require_once __DIR__ . '/../vendor/autoload.php';
 
 use Diynyk\Bitrix\Entities\EntityContact;
 use Diynyk\Bitrix\Helpers\BitrixConnectionCredentials;
-use Diynyk\Bitrix\ActivityType;
+use Diynyk\Bitrix\Crm\Activity\ActivityType;
 
 require_once 'credentials.php';
 

@@ -1,7 +1,7 @@
 <?php
 
 
-namespace Diynyk\Bitrix\Entities;
+namespace Diynyk\Bitrix\Crm\Entities;
 
 use JetBrains\PhpStorm\Pure;
 

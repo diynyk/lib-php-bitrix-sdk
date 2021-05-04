@@ -1,14 +1,16 @@
 <?php
 
-namespace Diynyk\Bitrix;
+namespace Diynyk\Bitrix\Crm\Catalog;
 
-use Diynyk\Bitrix\Entities\CatalogEntity;
+use Diynyk\Bitrix\Crm\CrmClientAbstract;
+use Diynyk\Bitrix\Crm\CrmClientInterface;
+use Diynyk\Bitrix\CrmEntities\CatalogEntity;
 
 /**
  * Class Catalog
  * @package Diynyk\Bitrix
  */
-class Catalog extends ClientAbstract implements ClientInterface
+class Catalog extends CrmClientAbstract implements CrmClientInterface
 {
     const ENTITY_CLASS = CatalogEntity::class;
 }

@@ -1,6 +1,6 @@
 <?php
 
-namespace Diynyk\Bitrix\Entities;
+namespace Diynyk\Bitrix\Crm\Entities;
 
 /**
  * Class ContactUserfieldEntity

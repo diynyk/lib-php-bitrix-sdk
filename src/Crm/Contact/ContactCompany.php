@@ -1,14 +1,16 @@
 <?php
 
-namespace Diynyk\Bitrix;
+namespace Diynyk\Bitrix\Crm\ContactCompany;
 
-use Diynyk\Bitrix\Entities\ContactCompanyEntity;
+use Diynyk\Bitrix\Crm\CrmClientAbstract;
+use Diynyk\Bitrix\Crm\CrmClientInterface;
+use Diynyk\Bitrix\Crm\Entities\ContactCompanyEntity;
 
 /**
  * Class ContactCompany
  * @package Diynyk\Bitrix
  */
-class ContactCompany extends ClientAbstract implements ClientInterface
+class ContactCompany extends CrmClientAbstract implements CrmClientInterface
 {
     const ENTITY_CLASS = ContactCompanyEntity::class;
 

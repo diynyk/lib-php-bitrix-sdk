@@ -1,14 +1,16 @@
 <?php
 
-namespace Diynyk\Bitrix;
+namespace Diynyk\Bitrix\Crm\InvoiceRecurring;
 
-use Diynyk\Bitrix\Entities\InvoiceRecurringEntity;
+use Diynyk\Bitrix\Crm\CrmClientAbstract;
+use Diynyk\Bitrix\Crm\CrmClientInterface;
+use Diynyk\Bitrix\Crm\Entities\InvoiceRecurringEntity;
 
 /**
  * Class InvoiceRecurring
  * @package Diynyk\Bitrix
  */
-class InvoiceRecurring extends ClientAbstract implements ClientInterface
+class InvoiceRecurring extends CrmClientAbstract implements CrmClientInterface
 {
     const ENTITY_CLASS = InvoiceRecurringEntity::class;
 }

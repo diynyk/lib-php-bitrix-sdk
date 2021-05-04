@@ -1,10 +1,10 @@
 <?php
 
-namespace Diynyk\Bitrix;
+namespace Diynyk\Bitrix\Crm\CompanyContact;
 
 use Diynyk\Bitrix\Crm\CrmClientAbstract;
 use Diynyk\Bitrix\Crm\CrmClientInterface;
-use Diynyk\Bitrix\Entities\CompanyContactEntity;
+use Diynyk\Bitrix\Crm\Entities\CompanyContactEntity;
 
 /**
  * Class CompanyContact

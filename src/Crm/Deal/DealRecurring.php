@@ -1,14 +1,16 @@
 <?php
 
-namespace Diynyk\Bitrix;
+namespace Diynyk\Bitrix\Crm\DealRecurring;
 
-use Diynyk\Bitrix\Entities\DealRecurringEntity;
+use Diynyk\Bitrix\Crm\CrmClientAbstract;
+use Diynyk\Bitrix\Crm\CrmClientInterface;
+use Diynyk\Bitrix\Crm\Entities\DealRecurringEntity;
 
 /**
  * Class DealRecurring
  * @package Diynyk\Bitrix
  */
-class DealRecurring extends ClientAbstract implements ClientInterface
+class DealRecurring extends CrmClientAbstract implements CrmClientInterface
 {
     const ENTITY_CLASS = DealRecurringEntity::class;
 }

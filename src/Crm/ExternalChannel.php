@@ -1,14 +1,16 @@
 <?php
 
-namespace Diynyk\Bitrix;
+namespace Diynyk\Bitrix\Crm\ExternalChannel;
 
-use Diynyk\Bitrix\Entities\ExternalChannelEntity;
+use Diynyk\Bitrix\Crm\CrmClientAbstract;
+use Diynyk\Bitrix\Crm\CrmClientInterface;
+use Diynyk\Bitrix\Crm\Entities\ExternalChannelEntity;
 
 /**
  * Class ExternalChannel
  * @package Diynyk\Bitrix
  */
-class ExternalChannel extends ClientAbstract implements ClientInterface
+class ExternalChannel extends CrmClientAbstract implements CrmClientInterface
 {
     const ENTITY_CLASS = ExternalChannelEntity::class;
 }
